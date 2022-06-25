@@ -1,5 +1,6 @@
 import random
 import os
+from art import logo
 
 
 def repartir_carta():
@@ -46,6 +47,7 @@ def comparar(puntaje_usuario, puntaje_crupier):
 
 def jugar():
 
+  print(logo)
 
   #Reparte al usuario y al crupier 2 cartas cada uno, usando repartir_carta()
   jugador_cartas = []
