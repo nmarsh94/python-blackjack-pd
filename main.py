@@ -5,8 +5,10 @@ from art import logo
 
 def repartir_carta():
   """Devuelve una carta aleatoria del mazo."""
-  cartas = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-  carta = random.choice(cartas)
+
+  cartas = {'A': 11, 'Dos': 2, 'Tres': 3, 'Cuatro': 4, 'Cinco': 5, 'Seis': 6, 'Siete': 7, 'Ocho': 8, 'Nueve': 9, 'Diex': 10, 'J': 10, 'Q': 10, 'K': 10}
+  maso_cartas = [carta for carta in cartas.values()]
+  carta = random.choice(maso_cartas)
   return carta
 
 
@@ -31,7 +33,7 @@ def comparar(puntaje_usuario, puntaje_crupier):
 
 
   if puntaje_usuario == puntaje_crupier:
-    return "\nEmpataste, no ganas ni pierdes dinero esta vez!"
+    return "\nEmpataste!"
   elif puntaje_crupier == 0:
     return "\nEl crupier tiene BlackJack, tu pierdes!"
   elif puntaje_usuario == 0:
@@ -50,13 +52,10 @@ def jugar():
   print(logo)
 
   #Reparte al usuario y al crupier 2 cartas cada uno, usando repartir_carta()
-  jugador_cartas = []
-  crupier_cartas = []
   is_game_over = False
 
-  for _ in range(2):
-    jugador_cartas.append(repartir_carta())
-    crupier_cartas.append(repartir_carta())
+  jugador_cartas = [repartir_carta() for x in range(2)]
+  crupier_cartas = [repartir_carta() for x in range(2)]
 
   #El puntaje se deberá volver a verificarse con cada nueva carta extraída y las verificaciones en la deberán repetirse hasta que finalice el juego.
 
@@ -64,8 +63,8 @@ def jugar():
     #Si el crupier o el jugador tiene blackjack (0) o si la puntuación del jugador es superior a 21, el juego termina.
     puntaje_usuario = calcular_puntaje(jugador_cartas)
     puntaje_crupier = calcular_puntaje(crupier_cartas)
-    print(f"\nTus cartas: {jugador_cartas}      - puntaje actual: {puntaje_usuario}")
-    print(f"Cartas crupier: {crupier_cartas}    - puntaje actual: {puntaje_crupier}")
+    print(f"\nCartas crupier: {crupier_cartas[0]}")
+    print(f"Tus cartas: {jugador_cartas}      - puntaje actual: {puntaje_usuario}")
 
     if puntaje_usuario == 0 or puntaje_crupier == 0 or puntaje_usuario > 21:
       is_game_over = True
@@ -83,12 +82,29 @@ def jugar():
     puntaje_crupier = calcular_puntaje(crupier_cartas)
 
   print('\n                          << RESULTADOS FINALES >>')
-  print(f"\nTu mano final: {jugador_cartas}          - puntaje final: {puntaje_usuario}")
-  print(f"Crupier mano final: {crupier_cartas}       - puntaje final: {puntaje_crupier}")
+  print(f"\nCrupier mano final: {crupier_cartas}       - puntaje final: {puntaje_crupier}")
+  print(f"Tu mano final: {jugador_cartas}          - puntaje final: {puntaje_usuario}")
   print(comparar(puntaje_usuario, puntaje_crupier))
 
 
+def reglas():
+  fileObject = open("reglas.txt", "r")
+  data = fileObject.read()
+  print(data)
+
 if __name__ == "__main__":
-  while input("\n\n############################################# Blackjack #############################################\n\nEscriba 'jugar' para comenzar o 'salir'  para salir del juego: ") == "jugar":
+  loop = True
+  while loop:
+    print ("\n\n############################################# Blackjack #############################################\n\n")
+    accion = input("Escriba 'jugar' para comenzar, 'reglas' para ver las reglas  o 'salir'  para salir del juego: ")
     os.system('clear')
-    jugar()
+
+    if accion == 'jugar':
+      jugar()
+    elif accion == 'reglas':
+      reglas()
+    elif accion == 'salir':
+      loop = False
+    else:
+      print("Seleccione una opcion valida")  
+    
