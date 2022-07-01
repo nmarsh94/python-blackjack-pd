@@ -4,6 +4,11 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------->>>  REGLAS DEL BLACKJACK  <<<-----------------------------------------------------
 
+Antes de que comience cada juego, primero se le pedirá que ingrese un valor de juego objetivo, ganará el juego en general si 
+llega a su valor objetivo y perderá si llega a cero.
+Recibirás la mitad de esta cantidad antes de empezar a jugar, y podrás elegir qué cantidad apostar cada vez que hayas ganado,
+perdido o empatado una mano contra el crupier.
+Se paga 1.5 veces la apuesta si tienes 21 puntos
 
 Este juego consiste en enfrentarse de forma individual a la banca comparando su mano contra la de la banca o crupier, intentando
 conseguir 21 puntos o el número más cercano posible sin pasarse. Para conseguir dicha puntuación se suman los valores de dos cartas
