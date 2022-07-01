@@ -25,31 +25,67 @@ def calcular_puntaje(cartas):
   return sum(cartas)
 
 
-def comparar(puntaje_usuario, puntaje_crupier):
+def comparar(puntaje_usuario, puntaje_crupier, saldo_actual, saldo_objetivo, apuesta):
   """Compara los puntajes del crupier y el usuario"""
 
-  if puntaje_usuario > 21 and puntaje_crupier > 21:
-    return "\nTe pasas de 21 puntos, has perdido"
+  gana_jugador = saldo_actual + apuesta
+  gana_jugador_bj = saldo_actual + (apuesta / 2) + apuesta
+  gana_crupier = saldo_actual - apuesta
 
+
+  if puntaje_usuario > 21 and puntaje_crupier > 21:
+    print("\nTe pasas de 21 puntos, has perdido")
+    jugar(gana_crupier,saldo_objetivo,0)
 
   if puntaje_usuario == puntaje_crupier:
-    return "\nEmpataste!"
+    print("\nEmpataste!")
+    jugar(saldo_actual,saldo_objetivo,0)
   elif puntaje_crupier == 0:
-    return "\nEl crupier tiene BlackJack, tu pierdes!"
+    print("\nEl crupier tiene BlackJack, tu pierdes!")
+    jugar(gana_crupier,saldo_objetivo,0)
   elif puntaje_usuario == 0:
-    return "\nTienes BlackJack, tu ganas!"
+    print("\nTienes BlackJack, tu ganas!")
+    jugar(gana_jugador_bj,saldo_objetivo,0)
   elif puntaje_usuario > 21:
-    return "\nTe pasas de 21 puntos, has perdido"
+    print("\nTe pasas de 21 puntos, has perdido")
+    jugar(gana_crupier,saldo_objetivo,0)
   elif puntaje_crupier > 21:
-    return "\nEl crupier se pása de 21 puntos, tu ganas!"
+    print("\nEl crupier se pása de 21 puntos, tu ganas!")
+    jugar(gana_jugador,saldo_objetivo,0)
   elif puntaje_usuario > puntaje_crupier:
-    return "\nTienes mas puntos, has ganado!"
+    print("\nTienes mas puntos, has ganado!")
+    jugar(gana_jugador,saldo_objetivo,0)
   else:
-    return "\nEl crupier tiene mas puntos, has perdido!"
+    print("\nEl crupier tiene mas puntos, has perdido!")
+    jugar(gana_crupier,saldo_objetivo,0)
 
-def jugar():
+def jugar(saldo_actual, saldo_objetivo, apuesta):
 
-  print(logo)
+  print ("\n\n############################################### Blackjack ###############################################\n\n")
+
+  if (saldo_actual >= saldo_objetivo):
+    print ("\n<<<< Felicidades, hiciste:  " + str(saldo_actual) + " y tu objetivo era llegar a: " + str(saldo_objetivo) + ". Ganaste todo el juego, bien hecho! >> >> \n\n\n")
+    mensaje_final=input("\nFin del juego, ¿quieres volver a jugar? escriba \"Sí\" o \"No\"\n") 
+    if mensaje_final == 'si':
+      menu_principal()
+    elif mensaje_final == 'no':
+      return   
+  elif saldo_actual <= 0:
+    mensaje_final=input("\nHas, perdido, fin del juego, ¿quieres volver a jugar? escriba \"Sí\" o \"No\"\n") 
+    if mensaje_final == 'si':
+      menu_principal()
+    elif mensaje_final == 'no':
+      menu_principal()
+
+  elif apuesta == 0:
+    print ("\n-> Saldo actual que tienes hasta el objetivo: " + str(saldo_actual) + " / " + str(saldo_objetivo))
+    cantidad_a_apostar = float(input("Ingrese la cantidad a apostar en el próximo juego: "))
+    if (cantidad_a_apostar < 1 or cantidad_a_apostar > saldo_actual):
+      print("<<No es un monto de apuesta válido, ingrese más de 0 y menos de su saldo restante>> \n")
+      jugar(saldo_actual , saldo_objetivo, apuesta=0)
+    else:
+      print("\n<<Apuesta aceptada!>> \n")
+      jugar(saldo_actual , saldo_objetivo, cantidad_a_apostar)
 
   #Reparte al usuario y al crupier 2 cartas cada uno, usando repartir_carta()
   is_game_over = False
@@ -84,7 +120,7 @@ def jugar():
   print('\n                          << RESULTADOS FINALES >>')
   print(f"\nCrupier mano final: {crupier_cartas}       - puntaje final: {puntaje_crupier}")
   print(f"Tu mano final: {jugador_cartas}          - puntaje final: {puntaje_usuario}")
-  print(comparar(puntaje_usuario, puntaje_crupier))
+  print(comparar(puntaje_usuario, puntaje_crupier, saldo_actual, saldo_objetivo, apuesta))
 
 
 def reglas():
@@ -92,19 +128,38 @@ def reglas():
   data = fileObject.read()
   print(data)
 
-if __name__ == "__main__":
-  loop = True
-  while loop:
-    print ("\n\n############################################# Blackjack #############################################\n\n")
-    accion = input("Escriba 'jugar' para comenzar, 'reglas' para ver las reglas  o 'salir'  para salir del juego: ")
-    os.system('clear')
+def menu_principal():
 
-    if accion == 'jugar':
-      jugar()
-    elif accion == 'reglas':
-      reglas()
-    elif accion == 'salir':
-      loop = False
+    print ("\n\n**************************************************************************************************************\n\n")
+    saldo_objetivo = float(input("Ingrese el saldo objetivo para ganar, ( comienza con la mitad de éste saldo. Objetivo de saldo mínimo de 20:  "))
+    menu_blackjack(saldo_objetivo)
+    if saldo_objetivo > 19:
+        menu_blackjack(saldo_objetivo)
     else:
-      print("Seleccione una opcion valida")  
+      print("Ingrese un saldo válido de al menos 20 para su objetivo")  
+      menu_principal()
+
+
+def menu_blackjack(saldo_objetivo):
+    loop = True
+    while loop:
+      print ("\n\n**************************************************************************************************************\n\n")
+          
+      if saldo_objetivo > 19:
+        accion = input("\nEscriba 'jugar' para comenzar, 'reglas' para ver las reglas  o 'salir'  para salir del juego: ").strip()
+        
+      os.system('clear')
+      saldo_actual = saldo_objetivo/2
+      if accion == 'jugar':
+        jugar(saldo_actual, saldo_objetivo,0)
+      elif accion == 'reglas':
+        reglas()
+      elif accion == 'salir':
+        return
+      else:
+        print("Seleccione una opcion valida")  
+
+if __name__ == "__main__":
+  print(logo)
+  menu_principal()
     
